@@ -1,0 +1,19 @@
+---
+/* Tres estados: sistema → claro → oscuro. El botón dice cuál está activo. */
+---
+<button class="theme" type="button" data-theme-toggle aria-label="Cambiar tema" title="Cambiar tema">
+  <span class="theme__icons" aria-hidden="true">
+    <svg class="theme__i theme__i--system" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7">
+      <rect x="3" y="4" width="18" height="13" />
+      <path d="M8 21h8" stroke-linecap="square" />
+    </svg>
+    <svg class="theme__i theme__i--light" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7">
+      <circle cx="12" cy="12" r="4.2" />
+      <path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6" stroke-linecap="square" />
+    </svg>
+    <svg class="theme__i theme__i--dark" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7">
+      <path d="M20 14.2A8.4 8.4 0 0 1 9.8 4 8.4 8.4 0 1 0 20 14.2Z" />
+    </svg>
+  </span>
+  <span class="theme__name" data-theme-name>Sistema</span>
+</button>
