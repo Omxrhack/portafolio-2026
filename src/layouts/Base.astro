@@ -203,9 +203,6 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://example.com
         root.dataset.themePref = next;
         if (next === 'system') delete root.dataset.theme;
         else root.dataset.theme = next;
-        document.querySelectorAll<HTMLElement>('[data-theme-name]').forEach((el) => {
-          el.textContent = NAMES[next];
-        });
         document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]').forEach((b) => {
           b.setAttribute('aria-label', `Tema: ${NAMES[next]}. Cambiar`);
         });
