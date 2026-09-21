@@ -1,0 +1,12 @@
+---
+import Reveal from './Reveal.astro';
+
+interface Props { label: string; tone?: 'light' | 'alt' | 'dark'; id?: string; }
+const { label, tone = 'light', id } = Astro.props;
+---
+<section id={id} class:list={['section', `section--${tone}`]}>
+  <div class="inner">
+    <Reveal><p class="label">{label}</p></Reveal>
+    <slot />
+  </div>
+</section>
