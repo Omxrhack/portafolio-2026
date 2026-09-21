@@ -45,6 +45,18 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://example.com
       />
     </noscript>
     <ClientRouter />
+    <script is:inline>
+      // Corre antes de pintar: evita el destello del tema equivocado.
+      (() => {
+        const pref = (() => {
+          try { return localStorage.getItem('theme') || 'system'; } catch { return 'system'; }
+        })();
+        const root = document.documentElement;
+        root.dataset.themePref = pref;
+        if (pref === 'system') delete root.dataset.theme;
+        else root.dataset.theme = pref;
+      })();
+    </script>
   </head>
   <body>
     <noscript><style>.reveal > * { transform: none !important; opacity: 1 !important; }</style></noscript>
@@ -172,7 +184,78 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://example.com
         document.addEventListener('astro:before-preparation', () => setOpen(false));
       }
 
+      /** Tema: sistema → claro → oscuro, con apertura circular desde el botón. */
+      const THEMES = ['system', 'light', 'dark'] as const;
+      type Theme = (typeof THEMES)[number];
+      const NAMES: Record<Theme, string> = { system: 'Sistema', light: 'Claro', dark: 'Oscuro' };
+
+      function readTheme(): Theme {
+        try {
+          const v = localStorage.getItem('theme');
+          return THEMES.includes(v as Theme) ? (v as Theme) : 'system';
+        } catch {
+          return 'system';
+        }
+      }
+
+      function paintTheme(next: Theme) {
+        const root = document.documentElement;
+        root.dataset.themePref = next;
+        if (next === 'system') delete root.dataset.theme;
+        else root.dataset.theme = next;
+        document.querySelectorAll<HTMLElement>('[data-theme-name]').forEach((el) => {
+          el.textContent = NAMES[next];
+        });
+        document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]').forEach((b) => {
+          b.setAttribute('aria-label', `Tema: ${NAMES[next]}. Cambiar`);
+        });
+        // La barra del navegador móvil sigue al tema elegido, no solo al del sistema.
+        const dark = next === 'dark' ||
+          (next === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]').forEach((m) => {
+          m.content = dark ? '#0e1015' : '#f4f5f8';
+        });
+      }
+
+      function applyTheme(next: Theme, origin?: HTMLElement) {
+        try { localStorage.setItem('theme', next); } catch { /* modo privado */ }
+
+        const root = document.documentElement;
+        const canAnimate =
+          'startViewTransition' in document && !reduced();
+
+        if (!canAnimate) {
+          root.classList.add('theme-fade');
+          paintTheme(next);
+          window.setTimeout(() => root.classList.remove('theme-fade'), 460);
+          return;
+        }
+
+        // El círculo nace en el botón que se pulsó.
+        if (origin) {
+          const r = origin.getBoundingClientRect();
+          root.style.setProperty('--tx', `${((r.left + r.width / 2) / window.innerWidth) * 100}%`);
+          root.style.setProperty('--ty', `${((r.top + r.height / 2) / window.innerHeight) * 100}%`);
+        }
+        root.dataset.themeAnim = '';
+        const vt = (document as any).startViewTransition(() => paintTheme(next));
+        vt.finished.finally(() => delete root.dataset.themeAnim);
+      }
+
+      function initTheme() {
+        paintTheme(readTheme());
+        document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]').forEach((btn) => {
+          if (btn.dataset.wired === 'true') return;
+          btn.dataset.wired = 'true';
+          btn.addEventListener('click', () => {
+            const next = THEMES[(THEMES.indexOf(readTheme()) + 1) % THEMES.length];
+            applyTheme(next, btn);
+          });
+        });
+      }
+
       function boot() {
+        initTheme();
         initReveal();
         initSpy();
         initMenu();
