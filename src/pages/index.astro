@@ -1,0 +1,58 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Section from '../components/Section.astro';
+import ProjectList from '../components/ProjectList.astro';
+import Reveal from '../components/Reveal.astro';
+import Socials from '../components/Socials.astro';
+import Portrait from '../components/Portrait.astro';
+import CvButton from '../components/CvButton.astro';
+import { site, stack, about, focus } from '../data/projects';
+---
+<Base title={site.owner} description={`${site.role}. ${site.brand}. Producto, sistemas e investigación.`}>
+  <Header />
+
+  <Section label="Perfil" id="perfil">
+    <div class="profile">
+      <div class="profile__text">
+        <Reveal><h1 class="item item--58">{site.role}</h1></Reveal>
+        <Reveal delay={80}><p class="caption caption--lead">{about.lead}</p></Reveal>
+      </div>
+      <Reveal delay={140} class="profile__portrait"><Portrait /></Reveal>
+    </div>
+
+    <div class="blocks blocks--wide">
+      {about.blocks.map((b, i) => (
+        <div class="block">
+          <Reveal delay={i * 70}><p class="block__key">{b.key}</p></Reveal>
+          <Reveal delay={i * 70 + 50}><p class="block__text">{b.text}</p></Reveal>
+        </div>
+      ))}
+    </div>
+  </Section>
+
+  <Section label="Enfoque" id="enfoque" tone="alt">
+    <dl class="focus">
+      {focus.map((f, i) => (
+        <Reveal delay={i * 60}>
+          <div class="focus__row">
+            <dt class="focus__key">{f.k}</dt>
+            <dd class="focus__val">{f.v}</dd>
+          </div>
+        </Reveal>
+      ))}
+    </dl>
+  </Section>
+
+  <Section label="Producto" id="producto"><ProjectList section="producto" /></Section>
+  <Section label="Sistemas" id="sistemas" tone="dark"><ProjectList section="sistemas" /></Section>
+  <Section label="Laboratorio" id="laboratorio" tone="alt"><ProjectList section="laboratorio" /></Section>
+
+  <Section label="Contacto" id="contacto">
+    <Reveal><h2 class="item item--58">Hablemos de tu producto</h2></Reveal>
+    <Reveal delay={80}><div class="cv-slot"><CvButton /></div></Reveal>
+    <Socials />
+    <Reveal delay={200}><p class="caption caption--lead">{site.education}</p></Reveal>
+    <Reveal delay={260}><p class="stack-line">{stack.join(' · ')}</p></Reveal>
+  </Section>
+</Base>
