@@ -8,9 +8,12 @@
 import { createServer } from 'node:http';
 import { createReadStream } from 'node:fs';
 import { stat } from 'node:fs/promises';
-import { extname, join, normalize, resolve } from 'node:path';
+import { extname, join, normalize, resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const ROOT = resolve('dist');
+// Relativo al propio archivo, no al directorio de trabajo: en un PaaS el cwd
+// no siempre es la raíz del proyecto.
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), 'dist');
 const PORT = Number(process.env.PORT) || 3000;
 
 const TYPES = {
@@ -99,6 +102,15 @@ const server = createServer(async (req, res) => {
   }
 });
 
+// Falla rápido y ruidoso si el build no llegó: un 404 en todo es peor que no arrancar.
+try {
+  const info = await stat(join(ROOT, 'index.html'));
+  if (!info.isFile()) throw new Error('index.html no es un archivo');
+} catch {
+  console.error(`No encuentro ${join(ROOT, 'index.html')}. ¿Corrió "npm run build"?`);
+  process.exit(1);
+}
+
 server.listen(PORT, '0.0.0.0', () => {
-  console.log(`Sirviendo dist/ en http://0.0.0.0:${PORT}`);
+  console.log(`Sirviendo ${ROOT} en http://0.0.0.0:${PORT}`);
 });
