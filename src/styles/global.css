@@ -1,19 +1,7 @@
 @import 'tailwindcss';
 
 @theme {
-  /* Superficies */
-  --color-paper: #f4f5f8;        /* yeso frío, con sesgo hacia el acento */
-  --color-paper-alt: #e9ebf2;    /* tercera superficie: Laboratorio */
-  --color-ink: #14161c;          /* carbón azulado */
-  --color-ink-deep: #0e1015;     /* fondo de la sección oscura */
-  --color-chalk: #f7f8fb;        /* texto sobre oscuro */
-
-  /* Acentos */
-  --color-cobalt: #2f3be8;       /* acento primario, sobre claro */
-  --color-cobalt-lift: #99a1ff;  /* mismo acento, legible sobre oscuro */
-  --color-clay: #c2603c;         /* secundario: Laboratorio y estado */
-  --color-muted: #6b7080;        /* gris azulado para texto de apoyo */
-
+  /* Las superficies y acentos viven en la capa de tema, más abajo. */
   --font-display: 'Archivo', ui-sans-serif, system-ui, sans-serif;
   --font-editorial: 'Instrument Serif', ui-serif, Georgia, serif;
   --font-body: 'Inter', ui-sans-serif, system-ui, sans-serif;
@@ -43,13 +31,50 @@
   --size-body: clamp(20px, 1.15vw, 24px);
   --header-h: 84px;
 
-  /* Roles por superficie — los componentes leen estos, nunca el token crudo. */
-  --bg: var(--color-paper);
-  --fg: var(--color-ink);
-  --accent: var(--color-cobalt);
-  --rule: color-mix(in oklab, var(--color-ink) 12%, transparent);
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-out: cubic-bezier(0.4, 0, 1, 1);
+
+  /* ——— Tema claro ———
+     Tres superficies con su texto y su acento. El sistema conserva la
+     alternancia: s3 siempre es la inversa de s1, sea cual sea el tema. */
+  --s1: #f4f5f8;  --on-s1: #14161c;  --acc-s1: #2f3be8;
+  --s2: #e9ebf2;  --on-s2: #14161c;  --acc-s2: #b4512c;
+  --s3: #0e1015;  --on-s3: #f7f8fb;  --acc-s3: #99a1ff;
+  --muted: #666b7a;
+  --rule-mix: 14%;
+  --glass: 88%;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --s1: #0e1015;  --on-s1: #f2f4f8;  --acc-s1: #8e97ff;
+  --s2: #16181f;  --on-s2: #f2f4f8;  --acc-s2: #e08a63;
+  --s3: #f2f3f7;  --on-s3: #14161c;  --acc-s3: #2f3be8;
+  --muted: #9aa0b0;
+  --rule-mix: 20%;
+  --glass: 84%;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+
+    --s1: #0e1015;  --on-s1: #f2f4f8;  --acc-s1: #8e97ff;
+    --s2: #16181f;  --on-s2: #f2f4f8;  --acc-s2: #e08a63;
+    --s3: #f2f3f7;  --on-s3: #14161c;  --acc-s3: #2f3be8;
+    --muted: #9aa0b0;
+    --rule-mix: 20%;
+    --glass: 84%;
+  }
+}
+
+/* Roles de la superficie actual. Todo componente lee estos, nunca un token crudo. */
+:root {
+  --bg: var(--s1);
+  --fg: var(--on-s1);
+  --accent: var(--acc-s1);
+  --rule: color-mix(in oklab, var(--fg) var(--rule-mix), transparent);
 }
 
 * { box-sizing: border-box; }
@@ -65,7 +90,7 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-::selection { background: var(--accent); color: var(--color-chalk); }
+::selection { background: var(--accent); color: var(--bg); }
 a { color: inherit; text-decoration: none; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
 
@@ -80,7 +105,7 @@ a { color: inherit; text-decoration: none; }
 
 .header__bar,
 .header__progress {
-  background: color-mix(in oklab, var(--color-paper) 88%, transparent);
+  background: color-mix(in oklab, var(--bg) var(--glass), transparent);
   backdrop-filter: saturate(1.4) blur(14px);
   -webkit-backdrop-filter: saturate(1.4) blur(14px);
 }
@@ -121,7 +146,7 @@ a { color: inherit; text-decoration: none; }
 .header__role {
   font-size: 13px;
   font-weight: 500;
-  color: var(--color-muted);
+  color: var(--muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -143,7 +168,7 @@ a { color: inherit; text-decoration: none; }
   font-size: var(--text-label);
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
-  color: var(--color-muted);
+  color: var(--muted);
   white-space: nowrap;
   transition: color 220ms linear;
 }
@@ -197,7 +222,7 @@ a { color: inherit; text-decoration: none; }
   bottom: 0;
   height: auto;
   z-index: 45;
-  background: var(--color-paper);
+  background: var(--bg);
   border-top: 1px solid var(--rule);
   padding: clamp(24px, 6vh, 56px) var(--margin-x) var(--spacing-40);
   display: flex;
@@ -256,7 +281,7 @@ a { color: inherit; text-decoration: none; }
   font-size: var(--text-label);
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
-  color: var(--color-muted);
+  color: var(--muted);
   padding: var(--spacing-8) 0;
 }
 .menu__chip:active, .menu__chip:focus-visible { color: var(--accent); }
@@ -266,7 +291,7 @@ a { color: inherit; text-decoration: none; }
   font-size: var(--text-label);
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
-  color: var(--color-muted);
+  color: var(--muted);
 }
 
 /* Entrada escalonada: la hoja se abre y las filas caen en orden. */
@@ -322,9 +347,15 @@ body.is-locked { overflow: hidden; }
   .section > .inner > :not(.mask:first-child) { grid-column: 2; }
 }
 
-.section--light { background: var(--color-paper); --bg: var(--color-paper); --fg: var(--color-ink); --accent: var(--color-cobalt); color: var(--fg); }
-.section--alt   { background: var(--color-paper-alt); --bg: var(--color-paper-alt); --fg: var(--color-ink); --accent: var(--color-clay); color: var(--fg); }
-.section--dark  { background: var(--color-ink-deep); --bg: var(--color-ink-deep); --fg: var(--color-chalk); --accent: var(--color-cobalt-lift); color: var(--fg); }
+.section--light { --bg: var(--s1); --fg: var(--on-s1); --accent: var(--acc-s1); }
+.section--alt   { --bg: var(--s2); --fg: var(--on-s2); --accent: var(--acc-s2); }
+.section--dark  { --bg: var(--s3); --fg: var(--on-s3); --accent: var(--acc-s3); }
+
+.section--light, .section--alt, .section--dark {
+  background: var(--bg);
+  color: var(--fg);
+  --rule: color-mix(in oklab, var(--fg) var(--rule-mix), transparent);
+}
 
 .label {
   font-family: var(--font-label);
@@ -418,8 +449,8 @@ body.is-locked { overflow: hidden; }
   margin: var(--spacing-32) 0 0;
   max-width: 46ch;
 }
-.caption--lead { margin-top: var(--spacing-40); color: var(--color-muted); }
-.section--dark .caption--lead { color: color-mix(in oklab, var(--color-chalk) 70%, transparent); }
+.caption--lead { margin-top: var(--spacing-40); color: var(--muted); }
+.section--dark .caption--lead { color: color-mix(in oklab, var(--fg) 70%, transparent); }
 
 /* ——— Subpantalla: bloques de descripción ——— */
 .blocks { display: flex; flex-direction: column; gap: var(--spacing-56); max-width: 72ch; }
@@ -444,7 +475,7 @@ body.is-locked { overflow: hidden; }
   font-size: var(--text-label);
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
-  color: var(--color-muted);
+  color: var(--muted);
 }
 .meta__val { margin: 0; font-size: var(--size-body); line-height: 1.35; font-weight: 500; }
 .meta__val--accent { color: var(--accent); }
@@ -458,7 +489,7 @@ body.is-locked { overflow: hidden; }
   font-size: var(--text-label);
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
-  color: var(--color-muted);
+  color: var(--muted);
   min-width: 96px;
 }
 .socials__link { border-bottom: 1px solid color-mix(in oklab, var(--accent) 35%, transparent); transition: color 220ms linear; }
@@ -513,7 +544,7 @@ body.is-locked { overflow: hidden; }
 }
 
 /* ——— Responsive ——— */
-@media (max-width: 1240px) { .header__role { display: none; } }
+@media (max-width: 1340px) { .header__role { display: none; } }
 
 /* Debajo de 1080px las secciones viven solo en el menú. */
 @media (max-width: 1080px) {
@@ -561,7 +592,7 @@ body.is-locked { overflow: hidden; }
   width: var(--cube);
   height: var(--cube);
   perspective: 240px;
-  color: var(--color-muted);
+  color: var(--muted);
   flex: none;
 }
 .cube--lg { --cube: 40px; perspective: 300px; }
@@ -587,7 +618,7 @@ body.is-locked { overflow: hidden; }
 .cube__face--front { transform: translateZ(calc(var(--cube) / 2)); }
 .cube__face--top {
   transform: rotateX(90deg) translateZ(calc(var(--cube) / 2));
-  color: var(--color-chalk);
+  color: var(--bg);
   background: var(--accent);
   border-color: var(--accent);
 }
@@ -621,7 +652,7 @@ body.is-locked { overflow: hidden; }
   font-size: var(--text-label);
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
-  color: var(--color-muted);
+  color: var(--muted);
   min-width: 108px;
   transition: color 220ms linear;
 }
@@ -672,7 +703,7 @@ body.is-locked { overflow: hidden; }
   font-size: 14px;
   line-height: 1.7;
   letter-spacing: 0.02em;
-  color: var(--color-muted);
+  color: var(--muted);
   max-width: 90ch;
 }
 
@@ -702,7 +733,7 @@ body.is-locked { overflow: hidden; }
   width: clamp(200px, 22vw, 380px);
   height: auto;
   border-radius: 0;
-  background: var(--color-paper-alt);
+  background: var(--s2);
   filter: grayscale(1) contrast(1.06) brightness(1.02);
   transition: filter 640ms var(--ease), transform 640ms var(--ease);
 }
@@ -719,7 +750,7 @@ body.is-locked { overflow: hidden; }
   font-size: var(--text-label);
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
-  color: var(--color-muted);
+  color: var(--muted);
 }
 
 @media (max-width: 899px) {
@@ -766,3 +797,70 @@ body.is-locked { overflow: hidden; }
 }
 
 .cv--compact { align-self: flex-start; padding: var(--spacing-8) var(--spacing-16); }
+
+/* ——— Selector de tema ———
+   Un botón, tres estados. El icono activo se desliza a la vista: el cambio
+   de tema se anuncia antes de ocurrir. */
+.theme {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  height: 34px;
+  padding: 0 var(--spacing-8);
+  background: none;
+  border: 1px solid transparent;
+  cursor: pointer;
+  color: var(--muted);
+  font-family: var(--font-label);
+  font-weight: 600;
+  font-size: var(--text-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  transition: color 220ms linear, border-color 220ms linear;
+}
+.theme:hover, .theme:focus-visible { color: var(--accent); border-color: color-mix(in oklab, var(--accent) 30%, transparent); }
+
+.theme__icons { position: relative; display: block; width: 18px; height: 18px; overflow: hidden; }
+.theme__i {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: translateY(100%);
+  transition: transform 420ms var(--ease), opacity 240ms linear;
+}
+:root[data-theme-pref='system'] .theme__i--system,
+:root[data-theme-pref='light'] .theme__i--light,
+:root[data-theme-pref='dark'] .theme__i--dark { opacity: 1; transform: none; }
+
+.theme__name { display: none; }
+@media (min-width: 1500px) { .theme__name { display: inline; min-width: 62px; text-align: left; } }
+
+.menu .theme {
+  height: auto;
+  padding: var(--spacing-8) 0;
+  border: 0;
+}
+.menu .theme__name { display: inline; }
+
+/* ——— Cambio de tema: el nuevo tema se abre desde el botón ——— */
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+
+  html[data-theme-anim] ::view-transition-old(root) { z-index: 1; }
+  html[data-theme-anim] ::view-transition-new(root) {
+    z-index: 2;
+    animation: theme-wipe 620ms var(--ease) both;
+  }
+  @keyframes theme-wipe {
+    from { clip-path: circle(0% at var(--tx, 50%) var(--ty, 0%)); }
+    to   { clip-path: circle(150% at var(--tx, 50%) var(--ty, 0%)); }
+  }
+}
+
+/* Mientras no hay View Transitions, el color viaja con una transición simple. */
+html.theme-fade,
+html.theme-fade body,
+html.theme-fade .section,
+html.theme-fade .header__bar,
+html.theme-fade .menu { transition: background-color 420ms var(--ease), color 420ms var(--ease); }
