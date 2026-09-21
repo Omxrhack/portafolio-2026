@@ -260,6 +260,9 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://example.com
       }
 
       window.addEventListener('scroll', onScroll, { passive: true });
+      // El router reemplaza <html> y con él los atributos del tema: hay que
+      // reponerlos antes de pintar, no en page-load (que ya llega tarde).
+      document.addEventListener('astro:after-swap', () => paintTheme(readTheme()));
       document.addEventListener('astro:page-load', boot);
       boot();
     </script>
