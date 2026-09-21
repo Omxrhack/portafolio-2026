@@ -1,0 +1,81 @@
+---
+import { site, socials } from '../data/projects';
+import Socials from './Socials.astro';
+import Icon from './Icon.astro';
+import CvButton from './CvButton.astro';
+
+interface Props { back?: boolean; }
+const { back = false } = Astro.props;
+const root = back ? '/' : '';
+
+const links = [
+  { label: 'Perfil', href: `${root}#perfil` },
+  { label: 'Producto', href: `${root}#producto` },
+  { label: 'Sistemas', href: `${root}#sistemas` },
+  { label: 'Laboratorio', href: `${root}#laboratorio` },
+  { label: 'Contacto', href: `${root}#contacto` },
+];
+---
+<header class="header" data-scrolled="false" transition:persist="header">
+  <div class="header__bar">
+    <a href="/" class="header__id" aria-label={back ? 'Volver al inicio' : site.owner}>
+      {back && <span class="header__back" aria-hidden="true">←</span>}
+      <span class="header__name">{site.owner}</span>
+      <span class="header__role">{site.role}</span>
+    </a>
+
+    <nav class="header__links" aria-label="Secciones">
+      {links.map((l) => <a class="header__link" href={l.href}>{l.label}</a>)}
+    </nav>
+
+    <div class="header__end">
+      <Socials compact />
+      <button
+        class="burger"
+        type="button"
+        aria-expanded="false"
+        aria-controls="menu"
+        aria-label="Abrir menú"
+      >
+        <span class="burger__lines" aria-hidden="true">
+          <span class="burger__line"></span>
+          <span class="burger__line"></span>
+          <span class="burger__line"></span>
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <div class="header__progress" aria-hidden="true"></div>
+
+  <div class="menu" id="menu" hidden>
+    <nav class="menu__links" aria-label="Secciones">
+      {links.map((l, i) => (
+        <a class="menu__link" href={l.href} style={`--i:${i}`}>
+          <span class="menu__num">{String(i + 1).padStart(2, '0')}</span>
+          <span class="menu__text">{l.label}</span>
+        </a>
+      ))}
+    </nav>
+
+    <div class="menu__foot" style={`--i:${links.length}`}>
+      <CvButton compact />
+      <a class="menu__mail" href={`mailto:${site.email}`}>{site.email}</a>
+      <div class="menu__social">
+        {socials.filter((s) => s.icon !== 'mail').map((s) => (
+          <a
+            class="menu__chip"
+            href={s.url}
+            rel="me noopener"
+            target="_blank"
+            aria-label={`${s.label}: ${s.handle}`}
+          >
+            <Icon name={s.icon} />
+            <span>{s.label}</span>
+          </a>
+        ))}
+      </div>
+      <p class="menu__place">{site.brand}</p>
+    </div>
+  </div>
+</header>
