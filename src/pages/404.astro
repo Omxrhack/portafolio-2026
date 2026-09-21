@@ -1,0 +1,23 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Reveal from '../components/Reveal.astro';
+import { site } from '../data/projects';
+---
+<Base title="Página no encontrada" description="Esta dirección no existe en el sitio de Omar Bermejo Osuna.">
+  <Header back />
+  <section class="section section--light">
+    <div class="inner">
+      <Reveal><p class="label">Error 404</p></Reveal>
+      <Reveal delay={60}><h1 class="item item--86">Aquí no hay nada</h1></Reveal>
+      <Reveal delay={140}>
+        <p class="caption caption--lead">
+          La dirección que abriste no existe o cambió de nombre.
+        </p>
+      </Reveal>
+      <Reveal delay={200}>
+        <p class="caption"><a class="socials__handle" href="/">Volver a {site.owner}</a></p>
+      </Reveal>
+    </div>
+  </section>
+</Base>
