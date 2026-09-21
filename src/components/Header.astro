@@ -3,6 +3,7 @@ import { site, socials } from '../data/projects';
 import Socials from './Socials.astro';
 import Icon from './Icon.astro';
 import CvButton from './CvButton.astro';
+import ThemeToggle from './ThemeToggle.astro';
 
 interface Props { back?: boolean; }
 const { back = false } = Astro.props;
@@ -29,6 +30,7 @@ const links = [
     </nav>
 
     <div class="header__end">
+      <ThemeToggle />
       <Socials compact />
       <button
         class="burger"
@@ -59,6 +61,7 @@ const links = [
     </nav>
 
     <div class="menu__foot" style={`--i:${links.length}`}>
+      <ThemeToggle />
       <CvButton compact />
       <a class="menu__mail" href={`mailto:${site.email}`}>{site.email}</a>
       <div class="menu__social">
