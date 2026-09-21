@@ -4,3 +4,4 @@ dist/
 .DS_Store
 cv/pg-*.png
 cv/foto.webp
+cv/*.pdf
