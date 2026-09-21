@@ -1,0 +1,182 @@
+---
+import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
+import { site } from '../data/projects';
+
+interface Props { title: string; description: string; }
+const { title, description } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://example.com').href;
+---
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f4f5f8" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content={site.owner} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <link rel="canonical" href={canonical} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600&family=Inter:wght@500;700&family=Instrument+Serif&family=Space+Grotesk:wght@600&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600&family=Inter:wght@500;700&family=Instrument+Serif&family=Space+Grotesk:wght@600&display=swap"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600&family=Inter:wght@500;700&family=Instrument+Serif&family=Space+Grotesk:wght@600&display=swap"
+      />
+    </noscript>
+    <ClientRouter />
+  </head>
+  <body>
+    <noscript><style>.reveal > * { transform: none !important; opacity: 1 !important; }</style></noscript>
+    <slot />
+
+    <script>
+      const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      /** Revelado por máscara al entrar en viewport. */
+      function initReveal() {
+        const nodes = document.querySelectorAll<HTMLElement>('.reveal:not(.is-in)');
+        if (reduced() || !('IntersectionObserver' in window)) {
+          nodes.forEach((n) => n.classList.add('is-in', 'is-done'));
+          return;
+        }
+        const io = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((e) => {
+              if (e.isIntersecting) {
+                const el = e.target as HTMLElement;
+                el.classList.add('is-in');
+                io.unobserve(el);
+                // Libera el recorte al terminar, para que el texto no quede mordido.
+                const child = el.firstElementChild;
+                child?.addEventListener('transitionend', () => el.classList.add('is-done'), { once: true });
+              }
+            });
+          },
+          { rootMargin: '0px 0px -12% 0px', threshold: 0.01 }
+        );
+        nodes.forEach((n) => io.observe(n));
+      }
+
+      /** Header: borde al despegar del tope + barra de progreso de lectura. */
+      let rafId = 0;
+      function onScroll() {
+        if (rafId) return;
+        rafId = requestAnimationFrame(() => {
+          rafId = 0;
+          const header = document.querySelector<HTMLElement>('.header');
+          if (!header) return;
+          header.dataset.scrolled = String(window.scrollY > 8);
+          const bar = header.querySelector<HTMLElement>('.header__progress');
+          if (bar) {
+            const max = document.documentElement.scrollHeight - window.innerHeight;
+            bar.style.setProperty('--p', String(max > 0 ? Math.min(window.scrollY / max, 1) : 0));
+          }
+        });
+      }
+
+      /** Marca la sección visible en los enlaces del header. */
+      function initSpy() {
+        const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('.header__link'));
+        const targets = links
+          .map((l) => document.getElementById(l.hash.slice(1)))
+          .filter((el): el is HTMLElement => Boolean(el));
+        if (!targets.length || !('IntersectionObserver' in window)) return;
+
+        const spy = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((e) => {
+              const link = links.find((l) => l.hash === `#${e.target.id}`);
+              if (link) link.setAttribute('aria-current', String(e.isIntersecting));
+            });
+          },
+          { rootMargin: '-40% 0px -55% 0px' }
+        );
+        targets.forEach((t) => spy.observe(t));
+      }
+
+      /** Menú móvil: hoja completa, con bloqueo de scroll y foco atrapado. */
+      function initMenu() {
+        const header = document.querySelector<HTMLElement>('.header');
+        const burger = header?.querySelector<HTMLButtonElement>('.burger');
+        const menu = header?.querySelector<HTMLElement>('#menu');
+        if (!header || !burger || !menu || burger.dataset.wired === 'true') return;
+        burger.dataset.wired = 'true';
+
+        const isOpen = () => burger.getAttribute('aria-expanded') === 'true';
+
+        // La hoja arranca justo debajo de la barra real, medida, no supuesta.
+        const syncHeight = () => {
+          const bar = header.querySelector<HTMLElement>('.header__bar');
+          if (bar) header.style.setProperty('--header-h', `${Math.round(bar.getBoundingClientRect().height)}px`);
+        };
+        syncHeight();
+        window.addEventListener('resize', syncHeight);
+
+        const setOpen = (open: boolean) => {
+          if (open === isOpen()) return;
+          burger.setAttribute('aria-expanded', String(open));
+          burger.setAttribute('aria-label', open ? 'Cerrar menú' : 'Abrir menú');
+          menu.hidden = !open;
+          document.body.classList.toggle('is-locked', open);
+          if (open) {
+            menu.querySelector<HTMLAnchorElement>('.menu__link')?.focus({ preventScroll: true });
+          } else {
+            burger.focus({ preventScroll: true });
+          }
+        };
+
+        burger.addEventListener('click', () => setOpen(!isOpen()));
+
+        // Cualquier enlace cierra la hoja antes de que el ancla haga su scroll.
+        menu.addEventListener('click', (e) => {
+          if ((e.target as HTMLElement).closest('a')) setOpen(false);
+        });
+
+        document.addEventListener('keydown', (e) => {
+          if (!isOpen()) return;
+          if (e.key === 'Escape') { setOpen(false); return; }
+          if (e.key !== 'Tab') return;
+
+          // Foco atrapado: el tabulador no se escapa al fondo bloqueado.
+          const focusables = [burger, ...Array.from(menu.querySelectorAll<HTMLElement>('a[href]'))];
+          const first = focusables[0];
+          const last = focusables[focusables.length - 1];
+          if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+          else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+        });
+
+        window.addEventListener('resize', () => {
+          if (window.innerWidth > 1080) setOpen(false);
+        });
+        document.addEventListener('astro:before-preparation', () => setOpen(false));
+      }
+
+      function boot() {
+        initReveal();
+        initSpy();
+        initMenu();
+        onScroll();
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      document.addEventListener('astro:page-load', boot);
+      boot();
+    </script>
+  </body>
+</html>
