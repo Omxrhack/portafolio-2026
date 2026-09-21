@@ -1,0 +1,17 @@
+---
+import { site } from '../data/projects';
+---
+<figure class="portrait">
+  <img
+    class="portrait__img"
+    src="/img/omar-640.webp"
+    srcset="/img/omar-640.webp 640w, /img/omar-1280.webp 1280w"
+    sizes="(max-width: 768px) 60vw, clamp(260px, 22vw, 380px)"
+    width="1800"
+    height="2250"
+    alt={`Retrato de ${site.owner}`}
+    loading="lazy"
+    decoding="async"
+  />
+  <figcaption class="portrait__cap">{site.brand}</figcaption>
+</figure>
