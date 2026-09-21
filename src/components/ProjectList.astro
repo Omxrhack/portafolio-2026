@@ -1,0 +1,26 @@
+---
+import Reveal from './Reveal.astro';
+import { bySection, type Section } from '../data/projects';
+
+interface Props { section: Section; }
+const { section } = Astro.props;
+const items = bySection(section);
+---
+<div class="stack">
+  {items.map((p, i) => (
+    <Reveal delay={i * 60}>
+      <a
+        href={`/${p.slug}/`}
+        class:list={['item', 'item--link', p.size === 86 ? 'item--86' : 'item--58']}
+        aria-label={`${p.name} — ${p.context}`}
+        transition:name={`title-${p.slug}`}
+      >
+        <span class="item__name">{p.name}</span>
+        <span class="item__aside" aria-hidden="true">
+          <span class="item__year">{p.year}</span>
+          <span class="item__arrow">↗</span>
+        </span>
+      </a>
+    </Reveal>
+  ))}
+</div>
