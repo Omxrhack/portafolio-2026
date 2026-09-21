@@ -1,0 +1,50 @@
+---
+import Reveal from './Reveal.astro';
+import Icon from './Icon.astro';
+import { socials } from '../data/projects';
+
+interface Props { compact?: boolean; }
+const { compact = false } = Astro.props;
+---
+{compact ? (
+  <div class="socials socials--compact">
+    {socials.map((s) => (
+      <a
+        class="cube"
+        href={s.url}
+        rel="me noopener"
+        target={s.url.startsWith('mailto:') ? undefined : '_blank'}
+        aria-label={`${s.label}: ${s.handle}`}
+      >
+        <span class="cube__box" aria-hidden="true">
+          <span class="cube__face cube__face--front"><Icon name={s.icon} /></span>
+          <span class="cube__face cube__face--top"><Icon name={s.icon} /></span>
+        </span>
+      </a>
+    ))}
+  </div>
+) : (
+  <div class="socials">
+    {socials.map((s, i) => (
+      <Reveal delay={i * 60}>
+        <p class="socials__row">
+          <a
+            class="socials__link"
+            href={s.url}
+            rel="me noopener"
+            target={s.url.startsWith('mailto:') ? undefined : '_blank'}
+          >
+            <span class="cube cube--lg" aria-hidden="true">
+              <span class="cube__box">
+                <span class="cube__face cube__face--front"><Icon name={s.icon} /></span>
+                <span class="cube__face cube__face--top"><Icon name={s.icon} /></span>
+              </span>
+            </span>
+            <span class="socials__label">{s.label}</span>
+            <span class="socials__handle">{s.handle}</span>
+          </a>
+        </p>
+      </Reveal>
+    ))}
+  </div>
+)}
