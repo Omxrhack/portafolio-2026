@@ -802,20 +802,15 @@ body.is-locked { overflow: hidden; }
    Un botón, tres estados. El icono activo se desliza a la vista: el cambio
    de tema se anuncia antes de ocurrir. */
 .theme {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-8);
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
   height: 34px;
-  padding: 0 var(--spacing-8);
+  padding: 0;
   background: none;
   border: 1px solid transparent;
   cursor: pointer;
   color: var(--muted);
-  font-family: var(--font-label);
-  font-weight: 600;
-  font-size: var(--text-label);
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
   transition: color 220ms linear, border-color 220ms linear;
 }
 .theme:hover, .theme:focus-visible { color: var(--accent); border-color: color-mix(in oklab, var(--accent) 30%, transparent); }
@@ -832,15 +827,7 @@ body.is-locked { overflow: hidden; }
 :root[data-theme-pref='light'] .theme__i--light,
 :root[data-theme-pref='dark'] .theme__i--dark { opacity: 1; transform: none; }
 
-.theme__name { display: none; }
-@media (min-width: 1500px) { .theme__name { display: inline; min-width: 62px; text-align: left; } }
-
-.menu .theme {
-  height: auto;
-  padding: var(--spacing-8) 0;
-  border: 0;
-}
-.menu .theme__name { display: inline; }
+.menu .theme { height: 40px; width: 40px; padding: 0; }
 
 /* ——— Cambio de tema: el nuevo tema se abre desde el botón ——— */
 @media (prefers-reduced-motion: no-preference) {
