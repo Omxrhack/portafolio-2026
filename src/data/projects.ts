@@ -22,6 +22,8 @@ export interface Project {
   year: string;
   tech: string[];
   status?: string;
+  /** Enlaces públicos: tienda, sitio, repositorio. */
+  links?: { label: string; url: string; kind?: 'appstore' | 'play' | 'web' }[];
 }
 
 export const site = {
@@ -125,15 +127,19 @@ export const projects: Project[] = [
     name: 'anottan',
     size: 58,
     section: 'producto',
-    context: 'App iOS de chat, proyectos y asistente de voz "Bea"',
+    context: 'App iOS de chat, proyectos y asistente de voz "Bea". Live en App Store',
     detail: {
       problem: 'Las ideas llegan cuando no puedes escribir: manejando, caminando, a media conversación. Para cuando abres una app de notas y la tecleas, la idea ya se diluyó o se quedó sin capturar.',
       how: 'Hablas y "Bea", el asistente de voz, transcribe en tiempo real y clasifica lo dicho en notas, tareas o el proyecto al que pertenece. Cada proyecto conserva su propio hilo de conversación, así que retomarlo dos semanas después no exige releer todo desde cero.',
-      built: 'App iOS nativa completa, diseño de producto y el flujo de voz como interfaz principal —no como botón accesorio.',
+      built: 'App iOS nativa completa, diseño de producto y el flujo de voz como interfaz principal —no como botón accesorio. Publicada en App Store.',
     },
     role: 'Desarrollo iOS y diseño de producto',
     year: '2025',
     tech: ['SwiftUI', 'Swift', 'Node.js'],
+    status: 'En tienda',
+    links: [
+      { label: 'Ver en App Store', url: 'https://apps.apple.com/us/app/anottan/id6798854468', kind: 'appstore' },
+    ],
   },
   {
     slug: 'cudmy',
