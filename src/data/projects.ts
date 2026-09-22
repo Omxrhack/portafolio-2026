@@ -121,6 +121,10 @@ export const projects: Project[] = [
     year: '2024 —',
     tech: ['React Native / Expo', 'Next.js', 'NestJS', 'AWS'],
     status: 'En tienda',
+    links: [
+      { label: 'Ver en App Store', url: 'https://apps.apple.com/us/app/easy-order/id6767426566', kind: 'appstore' },
+      { label: 'Ver en Google Play', url: 'https://play.google.com/store/apps/details?id=com.easyorder.easyorderv1', kind: 'play' },
+    ],
   },
   {
     slug: 'anottan',
