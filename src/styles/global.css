@@ -851,3 +851,34 @@ html.theme-fade body,
 html.theme-fade .section,
 html.theme-fade .header__bar,
 html.theme-fade .menu { transition: background-color 420ms var(--ease), color 420ms var(--ease); }
+
+/* ——— Enlaces de tienda ———
+   Mismo rectángulo del botón de CV: invierte al activarse, sin radio. */
+.stores { display: flex; flex-wrap: wrap; gap: var(--spacing-16); }
+
+.store {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-16);
+  padding: var(--spacing-16) var(--spacing-24);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  transition: background 320ms var(--ease), color 320ms var(--ease);
+}
+.store:hover, .store:focus-visible { background: var(--accent); color: var(--bg); }
+
+.store__mark { display: block; flex: none; }
+.store__text { display: flex; flex-direction: column; gap: 3px; }
+.store__label {
+  font-family: var(--font-label);
+  font-weight: 600;
+  font-size: var(--text-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+.store__host { font-size: 13px; font-weight: 500; opacity: 0.72; }
+.store__arrow { font-size: 18px; line-height: 1; }
+@media (prefers-reduced-motion: no-preference) {
+  .store__arrow { transition: transform 420ms var(--ease); }
+  .store:hover .store__arrow, .store:focus-visible .store__arrow { transform: translate3d(3px, -3px, 0); }
+}
