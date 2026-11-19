@@ -14,10 +14,10 @@ if (!existsSync(join(DIST, 'index.html'))) {
 }
 const home = readFileSync(join(DIST, 'index.html'), 'utf8');
 
-/** HTML de la sección #certificaciones, hasta la siguiente <section>. */
+/** HTML de la sección #certificados, hasta la siguiente <section>. */
 function certSection() {
-  const start = home.indexOf('id="certificaciones"');
-  assert.notEqual(start, -1, 'no hay sección #certificaciones en la portada');
+  const start = home.indexOf('id="certificados"');
+  assert.notEqual(start, -1, 'no hay sección #certificados en la portada');
   return home.slice(start, home.indexOf('<section', start + 1));
 }
 
@@ -55,8 +55,8 @@ test('la fecha visible corresponde al mes y año de datetime (sin corrimiento de
   }
 });
 
-test('Certificaciones va entre Laboratorio y Contacto', () => {
-  const order = ['laboratorio', 'certificaciones', 'contacto'].map((id) => home.indexOf(`id="${id}"`));
+test('Certificados va entre Laboratorio y Contacto', () => {
+  const order = ['laboratorio', 'certificados', 'contacto'].map((id) => home.indexOf(`id="${id}"`));
   assert.ok(order.every((i) => i > 0) && order[0] < order[1] && order[1] < order[2], String(order));
 });
 

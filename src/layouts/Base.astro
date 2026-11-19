@@ -178,8 +178,10 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://example.com
           else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
         });
 
+        // Si la hamburguesa ya no se ve, la hoja no tiene cómo cerrarse: se cierra sola.
+        // Se lee del CSS para que el corte viva en un solo lugar (global.css).
         window.addEventListener('resize', () => {
-          if (window.innerWidth > 1080) setOpen(false);
+          if (getComputedStyle(burger).display === 'none') setOpen(false);
         });
         document.addEventListener('astro:before-preparation', () => setOpen(false));
       }

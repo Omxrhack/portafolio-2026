@@ -15,13 +15,13 @@ tipografía, la inversión de superficie y el ritmo espacial.
 
 ```
 src/
-  data/projects.ts     Fuente única: proyectos, certificaciones, perfil, enfoque, redes
-  components/          Header, listas, certificaciones, retrato, iconos, botón de CV
+  data/projects.ts     Fuente única: proyectos, certificados, perfil, enfoque, redes
+  components/          Header, listas, certificados, retrato, iconos, botón de CV
   layouts/Base.astro   Head, transiciones de página, scripts de UI
   lib/public-file.ts   Truena el build si falta un archivo de public/ que se enlaza
   pages/
     index.astro        Perfil · Enfoque · Producto · Sistemas · Laboratorio ·
-                       Certificaciones · Contacto
+                       Certificados · Contacto
     [slug].astro       Una subpantalla por proyecto
     404.astro
 cv/                    Generador e impresor del CV en PDF
@@ -41,13 +41,13 @@ cwebp -q 86 -m 6 -resize 256 256 icono-1024.png -o public/img/proyectos/nombre-2
 cwebp -q 86 -m 6 -resize 512 512 icono-1024.png -o public/img/proyectos/nombre-512.webp
 ```
 
-Las certificaciones también viven en `projects.ts` (`certifications`), con la fecha
+Los certificados también viven en `projects.ts` (`certifications`), con la fecha
 de finalización en `aaaa-mm-dd` y el PDF en `public/certificados/` con un nombre
 limpio: los que descarga Cisco traen el correo del alumno en el nombre. La sección
 las ordena de la más reciente a la más antigua; el build falla si la fecha está mal
 escrita o falta el PDF.
 
-El CV en PDF no lee `projects.ts`: sus proyectos y certificaciones están escritos en
+El CV en PDF no lee `projects.ts`: sus proyectos y certificados están escritos en
 `cv/build.mjs`.
 
 ## Desarrollo

@@ -162,7 +162,7 @@ const html = `<!doctype html>
     ${lab.map(([n, t]) => `<div class="lab__i"><div class="lab__n">${n}</div><p class="lab__t">${t}</p></div>`).join('')}
   </div>
 
-  <h2 class="label">Certificaciones</h2>
+  <h2 class="label">Certificados</h2>
   <div class="certs">
     ${certs.map(([n, by, d]) => `<div class="cert"><div class="cert__n">${n}</div><p class="cert__by">${by} · <b>${d}</b></p></div>`).join('')}
   </div>
