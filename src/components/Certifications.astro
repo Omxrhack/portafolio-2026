@@ -1,0 +1,45 @@
+---
+import Reveal from './Reveal.astro';
+import { certifications } from '../data/projects';
+import { assertPublicFile } from '../lib/public-file';
+
+// UTC: "2025-06-01" interpretado en la hora local de Culiacán sería 31 de mayo.
+const month = new Intl.DateTimeFormat('es-MX', { month: 'short', year: 'numeric', timeZone: 'UTC' });
+
+const items = [...certifications]
+  .sort((a, b) => b.date.localeCompare(a.date))
+  .map((c) => {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(c.date)) {
+      throw new Error(`Fecha inválida en el certificado "${c.name}": "${c.date}" (usa aaaa-mm-dd)`);
+    }
+    assertPublicFile(c.file, `certificado "${c.name}"`);
+    return { ...c, when: month.format(new Date(`${c.date}T00:00:00Z`)) };
+  });
+---
+<ul class="certs">
+  {items.map((c, i) => (
+    <li class="cert">
+      <Reveal delay={i * 80}>
+        <p class="cert__meta">
+          <span>{c.issuer}</span>
+          <span aria-hidden="true"> · </span>
+          <time datetime={c.date}>{c.when}</time>
+        </p>
+      </Reveal>
+      <Reveal delay={i * 80 + 50}><p class="cert__name">{c.name}</p></Reveal>
+      {c.via && <Reveal delay={i * 80 + 90}><p class="cert__via">Impartido por {c.via}</p></Reveal>}
+      <Reveal delay={i * 80 + 120}>
+        <a
+          class="cert__link"
+          href={c.file}
+          target="_blank"
+          rel="noopener"
+          type="application/pdf"
+          aria-label={`Ver certificado en PDF: ${c.name}`}
+        >
+          Ver certificado <span class="cert__arrow" aria-hidden="true">↗</span>
+        </a>
+      </Reveal>
+    </li>
+  ))}
+</ul>

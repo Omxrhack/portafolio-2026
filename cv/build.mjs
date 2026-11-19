@@ -1,6 +1,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 
-const photo = readFileSync('/tmp/foto.b64', 'utf8');
+// El mismo retrato del sitio, embebido para que el HTML se imprima sin red ni archivos sueltos.
+const photo = `data:image/webp;base64,${readFileSync(new URL('../public/img/omar-640.webp', import.meta.url)).toString('base64')}`;
 
 const focus = [
   ['Móvil', 'iOS y Android nativos, React Native / Expo, Flutter. De la primera pantalla a la publicación en tienda.'],
@@ -13,12 +14,14 @@ const focus = [
 
 const producto = [
   ['Easy Order', '2024 —', 'En tienda', 'Suite de gestión para restaurantes: comanda en mesa, pantalla de cocina, cuentas, inventario y corte de caja. Arquitectura multi-tenant con cuatro roles. Publicada en App Store y Google Play, en operación real.', 'React Native / Expo · Next.js · NestJS · AWS'],
+  ['Socialler', '2026 —', 'Beta interna', 'Red social de entretenimiento colaborativo en tres idiomas. CTO de la reescritura Fénix: servicios con base propia en GraphQL federado, eventos NATS con outbox, cuentas propias y OTA con despliegue gradual.', 'React Native / Expo · NestJS · GraphQL Federation · NATS · PostgreSQL · AWS'],
+  ['Blyni', '2026 —', 'En desarrollo', 'Navegador en Rust para macOS y Windows: solo las pestañas que usas ocupan memoria. Binario de unos 2 MB.', 'Rust · AppKit / WebKit · Win32 / WebView2 · gRPC'],
   ['cudmy', '2025', '', 'Plataforma de cursos con rutas de carrera, catálogo, inscripciones y progreso. Front y backend completos.', 'Next.js · HeroUI · GSAP · NestJS'],
   ['Vende Digital3', '2024', '', 'Menús digitales por QR con pedido vía WhatsApp y media en la nube. Sin app ni comisión de plataforma.', 'Next.js · Tailwind · Cloudinary'],
   ['VetGo', '2024', '', 'Plataforma veterinaria multi-rol: expediente único con acceso separado para clínica, recepción y dueño.', 'React Native / Expo · NestJS · PostgreSQL'],
   ['bimoora', '2025', 'Pre-lanzamiento', 'Landing con countdown, arquitectura SEO sobre schema.org y bloque de seguridad definido desde el inicio.', 'Astro · Tailwind'],
   ['PR Friends', '2025', '', 'App universal para coordinar salidas de grupo, con backend propio, autenticación y notificaciones.', 'Expo · Node.js · Supabase'],
-  ['anottan', '2025', '', 'App iOS de captura por voz: el asistente "Bea" transcribe y clasifica en notas, tareas y proyectos.', 'SwiftUI · Swift · Node.js'],
+  ['anottan', '2025', 'En tienda','App iOS de captura por voz: el asistente "Bea" transcribe y clasifica en notas, tareas y proyectos.', 'SwiftUI · Swift · Node.js'],
   ['memuvi', '2024', '', 'Archivo de recuerdos con estado de ánimo y música asociada. Identidad completa y producto.', 'Expo · Supabase'],
   ['doplans', '2025', '', 'Descubrimiento de viajes y planeación de eventos. Código e identidad visual.', 'Next.js · Expo · Node.js'],
   ['tdapp', '2024', '', 'Tareas por categoría de enfoque, con widgets nativos y sincronización propia.', 'SwiftUI · Kotlin · Express'],
@@ -40,6 +43,12 @@ const lab = [
   ['qaride', 'Experimento de movilidad en Flutter: geolocalización y seguimiento en mapa.'],
 ];
 
+// Nombre tal como aparece en cada certificado; el más reciente primero.
+const certs = [
+  ['CCNA: Fundamentos de Conmutación, Enrutamiento y Redes Inalámbricas', 'Cisco Networking Academy', 'Jun 2025'],
+  ['CCNAv7: Introduction to Networks', 'Cisco Networking Academy', 'Dic 2022'],
+];
+
 const stack = 'SwiftUI · Jetpack Compose · React Native / Expo · Flutter · Swift · Kotlin · Dart · Node.js · Express · NestJS · Python (FastAPI) · Supabase · PostgreSQL · Astro · Next.js · Tailwind · GSAP · Cloudinary · AWS';
 
 const row = (name, year, status, text, tech) => `
@@ -59,7 +68,7 @@ const html = `<!doctype html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600&family=Inter:wght@400;500;700&family=Instrument+Serif&family=Space+Grotesk:wght@600&display=swap" rel="stylesheet">
 <style>
-  @page { size: A4; margin: 14mm 14mm 12mm; }
+  @page { size: A4; margin: 13mm 14mm 12mm; }
   :root {
     --paper:#ffffff; --alt:#eef0f5; --ink:#14161c; --cobalt:#2f3be8; --muted:#6b7080; --rule:#d7dae3;
     --f-display:'Archivo',sans-serif; --f-ed:'Instrument Serif',serif; --f-body:'Inter',sans-serif; --f-label:'Space Grotesk',monospace;
@@ -67,23 +76,23 @@ const html = `<!doctype html>
   * { box-sizing:border-box; }
   body { margin:0; font-family:var(--f-body); color:var(--ink); font-size:9pt; line-height:1.45; background:var(--paper); -webkit-print-color-adjust:exact; print-color-adjust:exact; }
 
-  .head { display:grid; grid-template-columns:1fr 26mm; gap:8mm; align-items:end; padding-bottom:5mm; border-bottom:1.5pt solid var(--ink); }
+  .head { display:grid; grid-template-columns:1fr 26mm; gap:8mm; align-items:end; padding-bottom:3.5mm; border-bottom:1.5pt solid var(--ink); }
   .name { font-family:var(--f-display); font-weight:600; font-size:30pt; line-height:1; letter-spacing:-0.033em; margin:0; }
   .role { font-family:var(--f-ed); font-size:14pt; line-height:1.1; margin:2mm 0 0; color:var(--ink); }
   .contact { margin:4mm 0 0; display:flex; flex-wrap:wrap; gap:1.5mm 5mm; font-size:8.2pt; color:var(--muted); }
   .contact b { color:var(--cobalt); font-weight:600; }
   .photo { width:26mm; height:32.5mm; object-fit:cover; filter:grayscale(1) contrast(1.06); background:var(--alt); }
 
-  .lead { margin:4mm 0 0; font-size:10pt; line-height:1.45; max-width:none; }
+  .lead { margin:3.5mm 0 0; font-size:10pt; line-height:1.45; max-width:none; }
 
-  .label { font-family:var(--f-label); font-weight:600; font-size:7.5pt; letter-spacing:0.069em; text-transform:uppercase; color:var(--cobalt); margin:4.4mm 0 2.2mm; display:flex; align-items:center; gap:3mm; }
+  .label { font-family:var(--f-label); font-weight:600; font-size:7.5pt; letter-spacing:0.069em; text-transform:uppercase; color:var(--cobalt); margin:3.4mm 0 2mm; display:flex; align-items:center; gap:3mm; break-after:avoid; }
   .label::after { content:''; flex:1; height:0.6pt; background:var(--rule); }
 
-  .focus { display:grid; grid-template-columns:1fr 1fr; gap:2mm 8mm; }
+  .focus { display:grid; grid-template-columns:1fr 1fr; gap:1.6mm 8mm; }
   .focus__k { font-family:var(--f-display); font-weight:600; font-size:9pt; color:var(--cobalt); }
   .focus__v { margin:0; font-size:8.4pt; color:var(--ink); }
 
-  .entry { break-inside:avoid; padding:1.45mm 0; border-top:0.6pt solid var(--rule); }
+  .entry { break-inside:avoid; padding:1.15mm 0; border-top:0.6pt solid var(--rule); }
   .entry:first-of-type { border-top:0; }
   .entry__head { display:flex; justify-content:space-between; align-items:baseline; gap:4mm; }
   .entry__name { font-family:var(--f-display); font-weight:600; font-size:11.5pt; letter-spacing:-0.025em; margin:0; }
@@ -92,10 +101,17 @@ const html = `<!doctype html>
   .entry__text { margin:0.8mm 0 0; font-size:8.5pt; }
   .entry__tech { margin:0.8mm 0 0; font-family:var(--f-label); font-size:7.2pt; letter-spacing:0.04em; color:var(--muted); }
 
-  .lab { display:grid; grid-template-columns:1fr 1fr; gap:1.5mm 8mm; }
+  .lab { display:grid; grid-template-columns:repeat(3, 1fr); gap:1.5mm 6mm; }
   .lab__i { break-inside:avoid; }
   .lab__n { font-family:var(--f-ed); font-size:11pt; }
   .lab__t { margin:0; font-size:8.2pt; color:var(--muted); }
+
+  /* Una línea por certificado: nombre a la izquierda, emisor y fecha a la derecha. */
+  .cert { break-inside:avoid; display:flex; justify-content:space-between; align-items:baseline; gap:4mm; padding:0.9mm 0; border-top:0.6pt solid var(--rule); }
+  .cert:first-child { border-top:0; padding-top:0; }
+  .cert__n { font-family:var(--f-display); font-weight:600; font-size:9.2pt; letter-spacing:-0.017em; line-height:1.25; }
+  .cert__by { margin:0; font-family:var(--f-label); font-size:7.2pt; letter-spacing:0.04em; color:var(--muted); white-space:nowrap; }
+  .cert__by b { color:var(--cobalt); font-weight:600; }
 
   .band { background:var(--ink); color:#f7f8fb; padding:3.5mm 4.5mm; margin-top:3mm; break-inside:avoid; }
   .band .label { color:#99a1ff; margin-top:0; }
@@ -108,7 +124,6 @@ const html = `<!doctype html>
   .foot__edu { font-family:var(--f-ed); font-size:11pt; }
   .foot__meta { font-family:var(--f-label); font-size:7.2pt; letter-spacing:0.069em; color:var(--cobalt); text-align:right; white-space:nowrap; }
   .stack { margin:2mm 0 0; font-family:var(--f-label); font-size:7.4pt; letter-spacing:0.03em; line-height:1.7; color:var(--muted); }
-  .page-break { break-before:page; }
 </style></head>
 <body>
 
@@ -135,12 +150,7 @@ const html = `<!doctype html>
   </div>
 
   <h2 class="label">Producto</h2>
-  ${producto.slice(0, 6).map((p) => row(...p)).join('')}
-
-  <div class="page-break"></div>
-
-  <h2 class="label">Producto (continuación)</h2>
-  ${producto.slice(6).map((p) => row(...p)).join('')}
+  ${producto.map((p) => row(...p)).join('')}
 
   <section class="band">
     <h2 class="label">Sistemas e investigación</h2>
@@ -150,6 +160,11 @@ const html = `<!doctype html>
   <h2 class="label">Laboratorio</h2>
   <div class="lab">
     ${lab.map(([n, t]) => `<div class="lab__i"><div class="lab__n">${n}</div><p class="lab__t">${t}</p></div>`).join('')}
+  </div>
+
+  <h2 class="label">Certificaciones</h2>
+  <div class="certs">
+    ${certs.map(([n, by, d]) => `<div class="cert"><div class="cert__n">${n}</div><p class="cert__by">${by} · <b>${d}</b></p></div>`).join('')}
   </div>
 
   <footer class="foot">

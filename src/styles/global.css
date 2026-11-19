@@ -862,9 +862,78 @@ html.theme-fade .menu { transition: background-color 420ms var(--ease), color 42
   height: 96px;
   border-radius: 22.5%;
   margin-bottom: var(--spacing-40);
+  /* Filete del color del texto: un icono blanco en el tema claro, o uno navy en
+     el oscuro, no se funde con la superficie. */
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--fg) 12%, transparent);
 }
 @media (max-width: 768px) {
   .project-logo { width: 64px; height: 64px; margin-bottom: var(--spacing-24); }
+}
+
+/* ——— Certificaciones ———
+   Misma retícula y filete que Enfoque: el certificado es un dato más del perfil,
+   no una medalla. El enlace al PDF usa el subrayado del acento, no un botón. */
+.certs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, clamp(300px, 26vw, 520px)), 1fr));
+  gap: var(--spacing-56) clamp(40px, 4vw, 88px);
+}
+.cert {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-16);
+  padding-top: var(--spacing-16);
+  border-top: 1px solid var(--rule);
+}
+.cert__meta {
+  margin: 0;
+  font-family: var(--font-label);
+  font-weight: 600;
+  font-size: var(--text-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.cert__name {
+  margin: 0;
+  font-size: var(--size-caption);
+  line-height: var(--leading-caption);
+  font-weight: 500;
+  text-wrap: balance;
+}
+.cert__via {
+  margin: 0;
+  font-size: var(--size-body);
+  line-height: 1.4;
+  color: color-mix(in oklab, var(--fg) 70%, transparent);
+}
+/* Va después de .mask > * para que su inline-flex gane al display:block. */
+.mask > .cert__link,
+.cert__link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  width: fit-content;
+  margin-top: var(--spacing-8);
+  padding-bottom: var(--spacing-4);
+  font-family: var(--font-label);
+  font-weight: 600;
+  font-size: var(--text-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--accent);
+  border-bottom: 1px solid color-mix(in oklab, var(--accent) 40%, transparent);
+  transition: border-color 260ms linear;
+}
+.cert__link:hover, .cert__link:focus-visible { border-bottom-color: var(--accent); }
+.cert__arrow { font-size: 1.25em; line-height: 1; }
+@media (prefers-reduced-motion: no-preference) {
+  .cert__arrow { transition: transform 420ms var(--ease); }
+  .cert__link:hover .cert__arrow,
+  .cert__link:focus-visible .cert__arrow { transform: translate3d(3px, -3px, 0); }
 }
 
 /* ——— Enlaces de tienda ———

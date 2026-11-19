@@ -45,7 +45,7 @@ export const site = {
   github: '@Omxrhack',
   githubUrl: 'https://github.com/Omxrhack',
   education: 'Ingeniería en TIC — Instituto Tecnológico de Culiacán, TecNM',
-  cv: { href: '/Omar-Bermejo-Osuna-CV.pdf', file: 'Omar-Bermejo-Osuna-CV.pdf', size: '286 KB', pages: '2 páginas · A4' },
+  cv: { href: '/Omar-Bermejo-Osuna-CV.pdf', file: 'Omar-Bermejo-Osuna-CV.pdf', size: '307 KB', pages: '2 páginas · A4' },
 } as const;
 
 export type SocialIcon = 'github' | 'x' | 'instagram' | 'threads' | 'mail';
@@ -103,6 +103,35 @@ export const stack = [
   'Next.js', 'Tailwind', 'GSAP', 'Cloudinary', 'DotLottie',
 ] as const;
 
+export interface Certification {
+  /** Nombre del curso exactamente como aparece en el certificado. */
+  name: string;
+  issuer: string;
+  /** Institución que lo impartió, cuando no fue el emisor directamente. */
+  via?: string;
+  /** Fecha de finalización, aaaa-mm-dd. Se formatea en UTC para que no recorra el mes. */
+  date: string;
+  /** PDF publicado en public/certificados/, con nombre limpio (sin el correo del alumno). */
+  file: string;
+}
+
+/** El orden aquí no importa: la sección los muestra del más reciente al más antiguo. */
+export const certifications: Certification[] = [
+  {
+    name: 'CCNAv7: Introduction to Networks',
+    issuer: 'Cisco Networking Academy',
+    date: '2022-12-16',
+    file: '/certificados/cisco-ccna-introduction-to-networks.pdf',
+  },
+  {
+    name: 'CCNA: Fundamentos de Conmutación, Enrutamiento y Redes Inalámbricas',
+    issuer: 'Cisco Networking Academy',
+    via: 'Instituto Tecnológico de Culiacán',
+    date: '2025-06-23',
+    file: '/certificados/cisco-ccna-conmutacion-enrutamiento-redes-inalambricas.pdf',
+  },
+];
+
 export const sectionLabel: Record<Section, string> = {
   producto: 'Producto',
   sistemas: 'Sistemas',
@@ -136,6 +165,7 @@ export const projects: Project[] = [
       { label: 'Ver en App Store', url: 'https://apps.apple.com/us/app/easy-order/id6767426566', kind: 'appstore' },
       { label: 'Ver en Google Play', url: 'https://play.google.com/store/apps/details?id=com.easyorder.easyorderv1', kind: 'play' },
     ],
+    logo: 'easy-order',
   },
   {
     slug: 'anottan',
@@ -155,6 +185,7 @@ export const projects: Project[] = [
     links: [
       { label: 'Ver en App Store', url: 'https://apps.apple.com/us/app/anottan/id6798854468', kind: 'appstore' },
     ],
+    logo: 'anottan',
   },
   {
     slug: 'socialler',
@@ -267,6 +298,7 @@ export const projects: Project[] = [
     role: 'Arquitectura, migraciones y onboarding',
     year: '2024',
     tech: ['React Native / Expo', 'NestJS', 'PostgreSQL'],
+    logo: 'vetgo',
   },
   {
     slug: 'tdapp',
@@ -282,6 +314,7 @@ export const projects: Project[] = [
     role: 'Desarrollo móvil y backend',
     year: '2024',
     tech: ['SwiftUI', 'Kotlin', 'Node.js', 'Express'],
+    logo: 'tdapp',
   },
   {
     slug: 'bimoora',
@@ -298,6 +331,7 @@ export const projects: Project[] = [
     year: '2025',
     tech: ['Astro', 'Tailwind', 'schema.org'],
     status: 'Pre-lanzamiento',
+    logo: 'bimoora',
   },
   {
     slug: 'petixfy',
@@ -313,6 +347,7 @@ export const projects: Project[] = [
     role: 'Desarrollo iOS y backend',
     year: '2025',
     tech: ['SwiftUI', 'Python (FastAPI)', 'DotLottie'],
+    logo: 'petixfy',
   },
   {
     slug: 'pr-friends',
@@ -437,6 +472,7 @@ export const projects: Project[] = [
     role: 'Desarrollo iOS',
     year: '2023',
     tech: ['Swift', 'SwiftUI'],
+    logo: 'recetiin',
   },
   {
     slug: 'pelisapp',

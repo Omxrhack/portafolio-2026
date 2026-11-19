@@ -58,7 +58,11 @@ function webpSize(file) {
   throw new Error(`${file}: chunk WebP desconocido "${chunk}"`);
 }
 
-const LOGOS = { socialler: 'socialler', blyni: 'blyni' };
+/** Proyectos con icono de app (slug → nombre base del archivo). */
+const LOGOS = Object.fromEntries(
+  ['easy-order', 'anottan', 'socialler', 'blyni', 'vetgo', 'tdapp', 'bimoora', 'petixfy', 'recetiin']
+    .map((s) => [s, s]),
+);
 
 // ——— Los dos proyectos nuevos ———
 

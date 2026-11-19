@@ -15,15 +15,17 @@ tipografía, la inversión de superficie y el ritmo espacial.
 
 ```
 src/
-  data/projects.ts     Fuente única: proyectos, perfil, enfoque, redes
-  components/          Header, listas, retrato, iconos, botón de CV
+  data/projects.ts     Fuente única: proyectos, certificaciones, perfil, enfoque, redes
+  components/          Header, listas, certificaciones, retrato, iconos, botón de CV
   layouts/Base.astro   Head, transiciones de página, scripts de UI
+  lib/public-file.ts   Truena el build si falta un archivo de public/ que se enlaza
   pages/
-    index.astro        Perfil · Enfoque · Producto · Sistemas · Laboratorio · Contacto
+    index.astro        Perfil · Enfoque · Producto · Sistemas · Laboratorio ·
+                       Certificaciones · Contacto
     [slug].astro       Una subpantalla por proyecto
     404.astro
-cv/                    Generador del CV en PDF
-public/                Retrato en WebP, iconos de proyecto y el CV publicado
+cv/                    Generador e impresor del CV en PDF
+public/                Retrato, iconos de proyecto, certificados y el CV publicado
 tests/                 Pruebas sobre el sitio construido (node:test, sin dependencias)
 ```
 
@@ -39,7 +41,14 @@ cwebp -q 86 -m 6 -resize 256 256 icono-1024.png -o public/img/proyectos/nombre-2
 cwebp -q 86 -m 6 -resize 512 512 icono-1024.png -o public/img/proyectos/nombre-512.webp
 ```
 
-El CV en PDF no lee `projects.ts`: sus proyectos están escritos en `cv/build.mjs`.
+Las certificaciones también viven en `projects.ts` (`certifications`), con la fecha
+de finalización en `aaaa-mm-dd` y el PDF en `public/certificados/` con un nombre
+limpio: los que descarga Cisco traen el correo del alumno en el nombre. La sección
+las ordena de la más reciente a la más antigua; el build falla si la fecha está mal
+escrita o falta el PDF.
+
+El CV en PDF no lee `projects.ts`: sus proyectos y certificaciones están escritos en
+`cv/build.mjs`.
 
 ## Desarrollo
 
@@ -54,12 +63,17 @@ npm test           # construye y prueba el sitio generado
 ## CV en PDF
 
 ```bash
-node cv/build.mjs
-"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless \
-  --no-pdf-header-footer --print-to-pdf="$PWD/cv/Omar-Bermejo-Osuna-CV.pdf" \
-  "file://$PWD/cv/cv.html"
-cp cv/Omar-Bermejo-Osuna-CV.pdf public/
+npm run cv         # genera cv/cv.html, lo imprime y copia el PDF a public/
 ```
+
+`cv/build.mjs` arma el HTML con el retrato de `public/img/` embebido. `cv/print.mjs`
+lo imprime con el Chromium que encuentre (Chrome, Brave o Chromium; `CHROME_PATH`
+para elegir otro) por el protocolo de DevTools, porque el modo `--headless
+--print-to-pdf` de Brave se cuelga sin error. Necesita red para las fuentes web: sin
+ellas la paginación cambia, y el script falla en vez de publicar un PDF distinto.
+
+Al terminar imprime el tamaño y las páginas; si cambiaron, actualiza `site.cv` en
+`src/data/projects.ts`. `npm test` falla si no coinciden con el PDF publicado.
 
 ## Deploy en Railway
 
