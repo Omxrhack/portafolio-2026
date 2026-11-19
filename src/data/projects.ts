@@ -1,6 +1,6 @@
 export type Section = 'producto' | 'sistemas' | 'laboratorio';
 
-/** Misma estructura para los 20 proyectos: problema, mecanismo, aporte. */
+/** Misma estructura para los 22 proyectos: problema, mecanismo, aporte. */
 export interface Detail {
   /** Qué problema resuelve, en términos de la persona que lo usa. */
   problem: string;
@@ -24,7 +24,18 @@ export interface Project {
   status?: string;
   /** Enlaces públicos: tienda, sitio, repositorio. */
   links?: { label: string; url: string; kind?: 'appstore' | 'play' | 'web' }[];
+  /**
+   * Nombre base del icono de app, solo para proyectos que tienen uno propio.
+   * Vive en public/img/proyectos/ como `{logo}-256.webp` y `{logo}-512.webp`,
+   * cuadrado y a sangre: el radio lo pone el CSS. Si falta un archivo, el build truena.
+   */
+  logo?: string;
 }
+
+/** Anchos en que se exporta cada icono; el de 512 cubre pantallas 3x. */
+export const logoSizes = [256, 512] as const;
+export const logoSrc = (logo: string, size: (typeof logoSizes)[number]): string =>
+  `/img/proyectos/${logo}-${size}.webp`;
 
 export const site = {
   owner: 'Omar Bermejo Osuna',
@@ -144,6 +155,43 @@ export const projects: Project[] = [
     links: [
       { label: 'Ver en App Store', url: 'https://apps.apple.com/us/app/anottan/id6798854468', kind: 'appstore' },
     ],
+  },
+  {
+    slug: 'socialler',
+    name: 'Socialler',
+    size: 86,
+    section: 'producto',
+    context: 'Red social de entretenimiento colaborativo en español, inglés y portugués. CTO de la reescritura Fénix',
+    detail: {
+      problem: 'Un creador de contenido construye su comunidad sobre una plataforma que no controla, y la plataforma tampoco puede fallarle: publicar, reaccionar y enterarse tiene que pasar al instante para todos a la vez. La versión anterior de Socialler dependía de un servicio externo para las cuentas de sus usuarios y cada corrección esperaba la revisión de la tienda.',
+      how: 'Fénix, la reescritura, separa cada dominio —cuentas, contenido, perfiles, media y notificaciones— en un servicio con su propia base de datos, y los compone en un solo grafo GraphQL federado. Los servicios no se llaman entre sí: publican eventos en NATS con outbox transaccional, y así una reacción o un nuevo seguidor llega como push por APNs y FCM sin acoplar a nadie. Las cuentas son propias, con tokens firmados y refresh que detecta reuso, y la app recibe actualizaciones por un servidor OTA propio con despliegue gradual, kill switch y rollback.',
+      built: 'Como CTO: arquitectura y la parte pesada del backend —social, media, notificaciones, reacciones y presencia— además de la capa de datos y los flujos de publicación en la app Expo. En beta interna por TestFlight y Google Play.',
+    },
+    role: 'CTO: arquitectura, backend y app móvil',
+    year: '2026 —',
+    tech: ['React Native / Expo', 'NestJS', 'GraphQL Federation', 'NATS', 'PostgreSQL', 'AWS'],
+    status: 'Beta interna',
+    links: [
+      { label: 'Visitar sitio', url: 'https://www.socialler.com', kind: 'web' },
+    ],
+    logo: 'socialler',
+  },
+  {
+    slug: 'blyni',
+    name: 'Blyni',
+    size: 58,
+    section: 'producto',
+    context: 'Navegador ligero para macOS y Windows, escrito en Rust',
+    detail: {
+      problem: 'Con cincuenta pestañas abiertas el navegador se come la memoria de la computadora aunque solo uses tres. Cerrarlas no es opción —son lecturas, pendientes, contexto— y mantenerlas vivas vuelve lenta a la máquina entera, con los anuncios y rastreadores que cada una carga.',
+      how: 'Blyni no trae motor propio: usa WebKit en macOS y WebView2 en Windows, y encima un núcleo en Rust reparte cada pestaña en tres niveles —caliente, tibia y fría—. Solo las que estás usando ocupan memoria; las olvidadas se guardan como URL y estado y reviven al volver a ellas. Una pestaña con audio, descarga o un formulario a medias nunca se congela, y si el sistema avisa presión de memoria todas bajan un nivel. El bloqueo de anuncios usa el motor de Brave: en macOS se compila a reglas nativas de WebKit y en Windows decide cada petición en microsegundos.',
+      built: 'Diseño y desarrollo completos: el núcleo multiplataforma, las capas nativas de macOS (AppKit vía objc2) y Windows (Win32 y WebView2), el bloqueador y los contratos gRPC. Un binario de unos 2 MB. La versión 0.1 corre en macOS; Windows ya compila y está por probarse en equipo real.',
+    },
+    role: 'Diseño y desarrollo',
+    year: '2026 —',
+    tech: ['Rust', 'AppKit / WebKit', 'Win32 / WebView2', 'gRPC'],
+    status: 'En desarrollo',
+    logo: 'blyni',
   },
   {
     slug: 'cudmy',

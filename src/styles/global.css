@@ -852,6 +852,21 @@ html.theme-fade .section,
 html.theme-fade .header__bar,
 html.theme-fade .menu { transition: background-color 420ms var(--ease), color 420ms var(--ease); }
 
+/* ——— Icono del proyecto ———
+   Solo para los proyectos con icono de app propio. Trae su propio fondo, así
+   que se lee igual en ambos temas. Es la única excepción a "sin radio": un icono
+   de app sin esquinas redondeadas ya no se reconoce como icono de app.
+   El alt va vacío: el h1 de abajo ya dice el nombre. */
+.project-logo {
+  width: 96px;
+  height: 96px;
+  border-radius: 22.5%;
+  margin-bottom: var(--spacing-40);
+}
+@media (max-width: 768px) {
+  .project-logo { width: 64px; height: 64px; margin-bottom: var(--spacing-24); }
+}
+
 /* ——— Enlaces de tienda ———
    Mismo rectángulo del botón de CV: invierte al activarse, sin radio. */
 .stores { display: flex; flex-wrap: wrap; gap: var(--spacing-16); }
