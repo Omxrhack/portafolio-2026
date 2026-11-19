@@ -7,7 +7,9 @@
     "build": "astro build",
     "preview": "astro preview",
     "start": "node server.mjs",
-    "check": "astro check"
+    "check": "astro check",
+    "test": "astro build && node --test tests/*.test.mjs",
+    "cv": "node cv/build.mjs && node cv/print.mjs"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.0.0",
@@ -16,5 +18,8 @@
   },
   "engines": {
     "node": ">=20"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.43"
   }
 }
